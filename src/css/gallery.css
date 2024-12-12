@@ -89,6 +89,7 @@
   border-radius: 50%;
   display: block;
   margin: 0 auto;
+  margin-bottom: 30px;
   animation: rotation 1s linear infinite;
 }
 
@@ -99,4 +100,22 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.load-more-btn {
+  display: block;
+  padding-top: 30px;
+  width: 125px;
+  height: 40px;
+  padding: 8px 16px 8px 16px;
+  border: 1px solid #4e75ff;
+  background-color: #4e75ff;
+  border-radius: 8px;
+  font-family: Montserrat;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: #fff;
 }

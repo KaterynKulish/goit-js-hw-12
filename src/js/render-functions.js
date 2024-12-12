@@ -9,9 +9,8 @@ export function createMarkup(arr) {
         views,
         comments,
         downloads,
-      }) => {
-        `
-<li class="photo-item">
+      }) =>
+        `<li class="photo-item">
         <a class="photo-link" href="${largeImageURL}" >
         <img class="photo-img" src=${webformatURL} alt="${tags}"/>
        </a> 
@@ -34,8 +33,7 @@ export function createMarkup(arr) {
           <span class="photo-info-value">${downloads}</span>
           </div>
        </div>
-       </li>        `;
-      }
+       </li>`
     )
     .join();
 }
