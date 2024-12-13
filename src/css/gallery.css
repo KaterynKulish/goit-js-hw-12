@@ -89,7 +89,6 @@
   border-radius: 50%;
   display: block;
   margin: 0 auto;
-  margin-bottom: 30px;
   animation: rotation 1s linear infinite;
 }
 
@@ -104,10 +103,10 @@
 
 .load-more-btn {
   display: block;
-  padding-top: 30px;
   width: 125px;
   height: 40px;
-  padding: 8px 16px 8px 16px;
+  padding: 8px 16px;
+  margin: 20px auto;
   border: 1px solid #4e75ff;
   background-color: #4e75ff;
   border-radius: 8px;

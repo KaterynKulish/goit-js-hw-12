@@ -35,5 +35,5 @@ export function createMarkup(arr) {
        </div>
        </li>`
     )
-    .join();
+    .join('');
 }
