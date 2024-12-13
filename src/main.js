@@ -11,9 +11,9 @@ const spinner = document.querySelector('.loader');
 const gallery = document.querySelector('.image-gallery');
 const loadMore = document.querySelector('.load-more-btn');
 
-let page = 10;
+let page = 1;
 let value;
-let per_page = 3;
+let per_page = 15;
 
 form.addEventListener('submit', handleSubmit);
 spinner.style.visibility = 'hidden';
@@ -89,6 +89,8 @@ async function handleLoadMore(event) {
         top: cardHeight,
         behavior: 'smooth',
       });
+
+      galleryBox.refresh();
 
       const allPages = Math.ceil(data.totalHits / per_page);
       if (page === allPages) {
