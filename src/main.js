@@ -1,4 +1,4 @@
-import { servicePhoto, serviceNextPhoto } from './js/pixabay-api';
+import { servicePhoto } from './js/pixabay-api';
 import { createMarkup } from './js/render-functions';
 
 import SimpleLightbox from 'simplelightbox';
@@ -36,7 +36,7 @@ async function handleSubmit(event) {
     spinner.style.visibility = 'hidden';
     return;
   }
-  servicePhoto(value, page)
+  servicePhoto(value, page, per_page)
     .then(photo => {
       gallery.innerHTML = '';
       if (!photo.total) {
@@ -79,9 +79,16 @@ loadMore.addEventListener('click', handleLoadMore);
 async function handleLoadMore(event) {
   event.preventDefault();
   page += 1;
-  serviceNextPhoto(value, page)
+  servicePhoto(value, page, per_page)
     .then(data => {
-      gallery.innerHTML = createMarkup(data.hits);
+      gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
+
+      const card = document.querySelector('.photo-item');
+      const cardHeight = card.getBoundingClientRect().height;
+      window.scrollBy({
+        top: cardHeight,
+        behavior: 'smooth',
+      });
 
       const allPages = Math.ceil(data.totalHits / per_page);
       if (page === allPages) {
