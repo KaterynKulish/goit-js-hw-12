@@ -13,7 +13,7 @@ const loadMore = document.querySelector('.load-more-btn');
 
 let page;
 let value;
-let per_page = 3;
+let per_page = 15;
 
 form.addEventListener('submit', handleSubmit);
 
