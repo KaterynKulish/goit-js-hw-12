@@ -11,13 +11,11 @@ const spinner = document.querySelector('.loader');
 const gallery = document.querySelector('.image-gallery');
 const loadMore = document.querySelector('.load-more-btn');
 
-let page = 1;
+let page;
 let value;
-let per_page = 15;
+let per_page = 3;
 
 form.addEventListener('submit', handleSubmit);
-spinner.style.visibility = 'hidden';
-loadMore.style.visibility = 'hidden';
 
 const galleryBox = new SimpleLightbox('.image-gallery a', {
   overlayOpacity: 0.8,
@@ -27,9 +25,12 @@ const galleryBox = new SimpleLightbox('.image-gallery a', {
   captionType: 'attr',
 });
 
+// ======================================================================
+
 async function handleSubmit(event) {
   event.preventDefault();
   spinner.style.visibility = 'visible';
+  page = 1;
 
   value = event.target.elements.imageQuery.value.trim();
   if (!value) {
@@ -54,8 +55,22 @@ async function handleSubmit(event) {
       }
       console.log(photo);
       gallery.innerHTML = createMarkup(photo.hits);
+
+      const allPages = Math.ceil(photo.totalHits / per_page);
+      if (page === allPages) {
+        loadMore.style.visibility = 'hidden';
+        iziToast.show({
+          backgroundColor: 'blue',
+          position: 'topRight',
+          messageColor: 'white',
+          iconColor: 'white',
+          maxWidth: 432,
+          message: "We're sorry, but you've reached the end of search results.",
+        });
+      }
       loadMore.style.visibility = 'visible';
       galleryBox.refresh();
+
       form.reset();
     })
     .catch(error => {
@@ -74,25 +89,30 @@ async function handleSubmit(event) {
       spinner.style.visibility = 'hidden';
     });
 }
+
+// =================================================================
+
 loadMore.addEventListener('click', handleLoadMore);
 
 async function handleLoadMore(event) {
   event.preventDefault();
   page += 1;
+  spinner.style.visibility = 'visible';
+
   servicePhoto(value, page, per_page)
-    .then(data => {
-      gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
+    .then(photo => {
+      gallery.insertAdjacentHTML('beforeend', createMarkup(photo.hits));
 
       const card = document.querySelector('.photo-item');
       const cardHeight = card.getBoundingClientRect().height;
       window.scrollBy({
-        top: cardHeight,
+        top: cardHeight * 2,
         behavior: 'smooth',
       });
 
       galleryBox.refresh();
 
-      const allPages = Math.ceil(data.totalHits / per_page);
+      const allPages = Math.ceil(photo.totalHits / per_page);
       if (page === allPages) {
         loadMore.style.visibility = 'hidden';
         iziToast.show({
@@ -104,7 +124,6 @@ async function handleLoadMore(event) {
           message: "We're sorry, but you've reached the end of search results.",
         });
       }
-      console.log(allPages);
     })
     .catch(error => {
       iziToast.error({
@@ -116,5 +135,8 @@ async function handleLoadMore(event) {
         message: error.message,
       });
       console.log(error.message);
+    })
+    .finally(() => {
+      spinner.style.visibility = 'hidden';
     });
 }

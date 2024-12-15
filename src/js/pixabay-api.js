@@ -14,7 +14,6 @@ export async function servicePhoto(value, page, per_page) {
       per_page,
     },
   });
-  console.log(per_page);
-
+  // const allPages = Math.ceil(photo.totalHits / per_page);
   return response.data;
 }

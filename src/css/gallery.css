@@ -90,6 +90,7 @@
   display: block;
   margin: 0 auto;
   animation: rotation 1s linear infinite;
+  visibility: hidden;
 }
 
 @keyframes rotation {
@@ -117,4 +118,5 @@
   letter-spacing: 0.04em;
   text-align: center;
   color: #fff;
+  visibility: hidden;
 }
