@@ -13,7 +13,7 @@ const loadMore = document.querySelector('.load-more-btn');
 
 let page;
 let value;
-let per_page = 15;
+const per_page = 30;
 
 form.addEventListener('submit', handleSubmit);
 
@@ -37,57 +37,57 @@ async function handleSubmit(event) {
     spinner.style.visibility = 'hidden';
     return;
   }
-  servicePhoto(value, page, per_page)
-    .then(photo => {
-      gallery.innerHTML = '';
-      if (!photo.total) {
-        iziToast.show({
-          backgroundColor: 'red',
-          position: 'topRight',
-          messageColor: 'white',
-          iconColor: 'white',
-          maxWidth: 432,
-          message:
-            'Sorry, there are no images matching your search query. Please try again!',
-        });
-        loadMore.style.visibility = 'hidden';
-        return;
-      }
-      console.log(photo);
-      gallery.innerHTML = createMarkup(photo.hits);
 
-      const allPages = Math.ceil(photo.totalHits / per_page);
-      if (page === allPages) {
-        loadMore.style.visibility = 'hidden';
-        iziToast.show({
-          backgroundColor: 'blue',
-          position: 'topRight',
-          messageColor: 'white',
-          iconColor: 'white',
-          maxWidth: 432,
-          message: "We're sorry, but you've reached the end of search results.",
-        });
-      }
-      loadMore.style.visibility = 'visible';
-      galleryBox.refresh();
-
-      form.reset();
-    })
-    .catch(error => {
-      iziToast.error({
+  try {
+    const photo = await servicePhoto(value, page, per_page);
+    gallery.innerHTML = '';
+    if (!photo.total) {
+      iziToast.show({
         backgroundColor: 'red',
         position: 'topRight',
         messageColor: 'white',
         iconColor: 'white',
         maxWidth: 432,
-        message: error.message,
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
       });
-      console.log(error.message);
       loadMore.style.visibility = 'hidden';
-    })
-    .finally(() => {
-      spinner.style.visibility = 'hidden';
+      return;
+    }
+    console.log(photo);
+    gallery.innerHTML = createMarkup(photo.hits);
+
+    const allPages = Math.ceil(photo.totalHits / per_page);
+    if (page === allPages) {
+      iziToast.show({
+        backgroundColor: 'blue',
+        position: 'topRight',
+        messageColor: 'white',
+        iconColor: 'white',
+        maxWidth: 432,
+        message: "We're sorry, but you've reached the end of search results.",
+      });
+      loadMore.style.visibility = 'hidden';
+    } else {
+      loadMore.style.visibility = 'visible';
+    }
+    galleryBox.refresh();
+
+    form.reset();
+  } catch (error) {
+    iziToast.error({
+      backgroundColor: 'red',
+      position: 'topRight',
+      messageColor: 'white',
+      iconColor: 'white',
+      maxWidth: 432,
+      message: error.message,
     });
+    console.log(error.message);
+    loadMore.style.visibility = 'hidden';
+  } finally {
+    spinner.style.visibility = 'hidden';
+  }
 }
 
 // =================================================================
@@ -99,44 +99,43 @@ async function handleLoadMore(event) {
   page += 1;
   spinner.style.visibility = 'visible';
 
-  servicePhoto(value, page, per_page)
-    .then(photo => {
-      gallery.insertAdjacentHTML('beforeend', createMarkup(photo.hits));
+  try {
+    const photo = await servicePhoto(value, page, per_page);
 
-      const card = document.querySelector('.photo-item');
-      const cardHeight = card.getBoundingClientRect().height;
-      window.scrollBy({
-        top: cardHeight * 2,
-        behavior: 'smooth',
-      });
+    gallery.insertAdjacentHTML('beforeend', createMarkup(photo.hits));
 
-      galleryBox.refresh();
+    const card = document.querySelector('.photo-item');
+    const cardHeight = card.getBoundingClientRect().height;
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
 
-      const allPages = Math.ceil(photo.totalHits / per_page);
-      if (page === allPages) {
-        loadMore.style.visibility = 'hidden';
-        iziToast.show({
-          backgroundColor: 'blue',
-          position: 'topRight',
-          messageColor: 'white',
-          iconColor: 'white',
-          maxWidth: 432,
-          message: "We're sorry, but you've reached the end of search results.",
-        });
-      }
-    })
-    .catch(error => {
-      iziToast.error({
-        backgroundColor: 'red',
+    galleryBox.refresh();
+
+    const allPages = Math.ceil(photo.totalHits / per_page);
+    if (page === allPages) {
+      loadMore.style.visibility = 'hidden';
+      iziToast.show({
+        backgroundColor: 'blue',
         position: 'topRight',
         messageColor: 'white',
         iconColor: 'white',
         maxWidth: 432,
-        message: error.message,
+        message: "We're sorry, but you've reached the end of search results.",
       });
-      console.log(error.message);
-    })
-    .finally(() => {
-      spinner.style.visibility = 'hidden';
+    }
+  } catch (error) {
+    iziToast.error({
+      backgroundColor: 'red',
+      position: 'topRight',
+      messageColor: 'white',
+      iconColor: 'white',
+      maxWidth: 432,
+      message: error.message,
     });
+    console.log(error.message);
+  } finally {
+    spinner.style.visibility = 'hidden';
+  }
 }
